@@ -40,13 +40,12 @@
         <li>
           <a href="http://gravatar.com/emails/">
             <img id="gravatar" alt="<?= $this->session->userdata('name') ?>'s avatar"
-                 src="<?= gravatar($this->session->userdata('email'), 24, false, 'mm') ?>"
+                 src="<?= gravatar($this->session->userdata('email'), 64, false, 'mm') ?>"
                  title="Change your avatar at gravatar.com"/>
             <span class="text-info"><?= $this->session->userdata('name') ?></span>
           </a>
         </li>
         <li><a href="/logout">Logout</a></li>
-        <span><?= $this->session->userdata('name') ?></span>
         <?php } else { ?>
         <li <?= uri_string() == 'login' ? 'class="active"' : '' ?>><a href="/login">Login</a></li>
         <?php } ?>

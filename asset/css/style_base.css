@@ -1,14 +1,14 @@
 /***** Master Page additional CSS *****/
 body {
-   padding-top: 25px;
+   padding-top: 50px;
 }
 
 #gravatar {
-   width: 24px;
-   height: 24px;
+   width: 30px;
+   height: 30px;
    border-radius: 3px;
    float: left;
-   margin: -3px 5px;
+   margin: -5px 6px;
 }
 
 #footer {
