@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Index extends CI_Controller {
+class Index extends MY_Controller {
 
   public function __construct() {
     parent::__construct();
@@ -10,7 +10,8 @@ class Index extends CI_Controller {
 	 * Index Page for this controller.
 	 */
 	public function index() {
-		$this->load->view('index');
+		$this->addView('index');
+    $this->loadView(array('title' => 'Room Finding'));
 	}
 }
 
