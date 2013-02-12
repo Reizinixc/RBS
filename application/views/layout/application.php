@@ -57,7 +57,7 @@
 
 <?php
 $flashMsgs = $this->session->flashdata('msg');
-if (isset($flashMsgs)) {
+if (is_array($flashMsgs)) {
   $this->load->helper('flashmsg');
   foreach ($flashMsgs as $msg) {
     echo flashmsg($msg['type'], $msg['head'], $msg['msg']);
