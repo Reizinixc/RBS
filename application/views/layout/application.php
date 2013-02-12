@@ -55,17 +55,17 @@
   </div>
 </nav>
 
-<?php
-$flashMsgs = $this->session->flashdata('msg');
-if (is_array($flashMsgs)) {
-  $this->load->helper('flashmsg');
-  foreach ($flashMsgs as $msg) {
-    echo flashmsg($msg['type'], $msg['head'], $msg['msg']);
-  }
-}
-?>
-
 <div id="content" class="container">
+  <?php
+  $flashMsgs = $this->session->flashdata('msg');
+  if (is_array($flashMsgs)) {
+    $this->load->helper('flashmsg');
+    foreach ($flashMsgs as $msg) {
+      echo flashmsg($msg['type'], $msg['head'], $msg['msg']);
+    }
+  }
+  ?>
+
   <?= $content ?>
 </div>
 
