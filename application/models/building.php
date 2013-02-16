@@ -18,7 +18,7 @@ class Building extends MY_Model {
   }
 
   public function find($id) {
-    $query = $this->db->get_where('buildings', array('id' => $id), 1);
+    $query = $this->db->get_where($this->tablename, array('id' => $id), 1);
 
     return $query->num_rows() ? $query->result()[0] : false;
   }

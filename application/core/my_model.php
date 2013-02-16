@@ -5,7 +5,7 @@ class MY_Model extends CI_Model {
    * Table name for manipulate data.
    * @var string
    */
-  private $tablename;
+  protected $tablename;
 
   /**
    * Validation error array.
