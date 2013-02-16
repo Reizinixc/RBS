@@ -7,13 +7,12 @@ class Buildings extends MY_Structure_Controller {
 
   public function __construct() {
     parent::__construct();
+    $this->load->model('building');
   }
 
   public function index() {
     if ($_SERVER['REQUEST_METHOD'] != 'POST') {
-      $query = $this->db->get('buildings');
-
-      $data['buildings'] = $query->result();
+      $data['buildings'] = $this->building->findAll();
       $data['title'] = 'Building List';
 
       $this->addView('structure/building');
@@ -27,36 +26,43 @@ class Buildings extends MY_Structure_Controller {
       if ($this->form_validation->run() == false) {
         echo flashmsg('error', '', form_error('buildingname'));
       } else {
-        $this->db->insert('buildings', array('name' => $this->input->get_post('buildingname', true)));
-        $this->session->set_flashdata('msg', array(array('type' => 'success', 'head' => '', 'msg' => "Successfully added building {$this->input->get_post('buildingname')}")));
+        $this->building->name = $this->input->get_post('buildingname', true);
+        if ($this->building->save())
+          $this->session->set_flashdata('msg', array(array('type' => 'success', 'head' => '', 'msg' => "Successfully added building {$this->input->get_post('buildingname')}")));
       }
       redirect(site_url('structure/buildings'));
     }
   }
 
   public function edit($id) {
+    $this->load->library('form_validation');
+    $this->load->helper('form');
+    $this->load->helper('flashmsg');
+
     $data = array();
+    $data['form_errors'] = array();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Update Data
-      $this->load->library('form_validation');
-      $this->load->helper('form');
-      $this->load->helper('flashmsg');
-
-      $this->form_validation->set_rules('buildingname', 'Building Name', 'trim|required|max_length[128]|xss_clean');
+      // Updating Data
+      $this->form_validation->set_rules($this->building->getValidationRule());
       if ($this->form_validation->run() == false) {
-        echo flashmsg('error', '', form_error('buildingname'));
-        redirect(current_url());
+        $this->addView('structure/building_edit');
+        $this->loadView();
       } else {
-        $this->db->update('buildings', array('name' => $this->input->get_post('buildingname', true)), array('id' => $id));
-        $this->session->set_flashdata('msg', array(array('type' => 'success', 'head' => '', 'msg' => "Successfully edited building to {$this->input->get_post('buildingname')}")));
-        redirect(site_url('structure/buildings'));
+        $this->building->id = $id;
+        $this->building->name = $this->input->get_post('buildingname', true);
+
+        if ($this->building->save()) {
+          $this->session->set_flashdata('msg', array(array('type' => 'success', 'head' => '', 'msg' => "Successfully edited building to {$this->input->get_post('buildingname')}")));
+          redirect(site_url('structure/buildings'));
+        }
       }
+      // END UPDATING DATA
     } else {
-      // Render form
-      $building = $this->_getBuilding($id);
+      // RENDER FORM
+      $building = $this->building->find($id);
       if ($building !== false) {
-        $data['buildingname'] = $building[0]->name;
+        $data['buildingname'] = $building->name;
         $data['title'] = 'Building Editing';
       } else {
         $this->session->set_flashdata('msg', array(array('type' => 'error', 'head' => '', 'msg' => "Building not found. Maybe deleted by other user.")));
@@ -65,18 +71,20 @@ class Buildings extends MY_Structure_Controller {
 
       $this->addView('structure/building_edit');
       $this->loadView($data);
+      // END RENDERFORM
     }
   }
 
   public function delete($id) {
-    $buildings = $this->_getBuilding($id);
+    $building = $this->building->find($id);
 
-    if ($buildings === false) {
+    if ($building === false) {
       $this->session->set_flashdata('msg', array(array('type' => 'error', 'head' => '', 'msg' => "Building not found. Maybe deleted by other user.")));
     } else {
-      $buildingname = $buildings[0]->name;
+      $this->building->id = $id;
+      $buildingname = $building->name;
 
-      if ($this->db->delete('buildings', array('id' => $id))) {
+      if ($this->building->delete()) {
         $this->session->set_flashdata('msg', array(array('type' => 'success', 'head' => '', 'msg' => "Successfully deleted building $buildingname")));
       } else {
         $this->session->set_flashdata('msg', array(array('type' => 'error', 'head' => '', 'msg' => "Cannot delete $buildingname. May be this building was booked from other user.")));
@@ -84,17 +92,5 @@ class Buildings extends MY_Structure_Controller {
 
       redirect(site_url('structure/buildings'));
     }
-  }
-
-  /**
-   * Get the building object from building id
-   * @param number $id
-   * @return boolean false if cannot find
-   * @return array list of id
-   */
-  private function _getBuilding($id) {
-    $query = $this->db->get_where('buildings', array('id' => $id));
-
-    return $query->num_rows() ? $query->result() : false;
   }
 }
