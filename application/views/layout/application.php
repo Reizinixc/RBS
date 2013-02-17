@@ -11,12 +11,12 @@
   <?php
   if (!empty($stylesheets))
     foreach ($stylesheets as $stylesheet) {
-      echo link_tag($stylesheet);
+      echo link_tag($stylesheet)."\n";
     }
 
   if (!empty($jsscripts))
     foreach ($jsscripts as $jsscript) {
-      echo '<script type="text/javascript" src="'.$jsscript.'"></script>\n';
+      echo "<script type=\"text/javascript\" src=\"$jsscript\"></script>\n";
     }
   ?>
 </head>
