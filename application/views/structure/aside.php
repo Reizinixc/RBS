@@ -9,12 +9,6 @@ $menus = <<<EOF
     {
       "n": "buildings",
       "d": "Buildings"
-    }
-  ],
-  [
-    {
-      "n": "courses",
-      "d": "Courses"
     },
     {
       "n": "semesters",
