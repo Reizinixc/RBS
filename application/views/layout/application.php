@@ -4,10 +4,10 @@
   <meta charset="utf-8"/>
   <title><?= isset($title) ? $title : "" ?> &laquo; Room Booking Services</title>
 
-  <link rel="stylesheet" href="/asset/css/bootstrap.min.css" type="text/css"/>
-  <link rel="stylesheet" href="/asset/css/style_base.css" type="text/css"/>
-  <script type="text/javascript" src="/asset/js/layout/jquery-1.9.1.min.js"></script>
-  <script type="text/javascript" src="/asset/js/layout/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="<?= site_url('asset/css/bootstrap.min.css') ?>" type="text/css"/>
+  <link rel="stylesheet" href="<?= site_url('asset/css/style_base.css') ?>" type="text/css"/>
+  <script type="text/javascript" src="<?= site_url('asset/js/layout/jquery-1.9.1.min.js') ?>"></script>
+  <script type="text/javascript" src="<?= site_url('asset/js/layout/bootstrap.min.js') ?>"></script>
   <?php
   if (!empty($stylesheets))
     foreach ($stylesheets as $stylesheet) {
@@ -28,9 +28,9 @@
       <a class="brand" href="<?= site_url() ?>">Room Booking Service</a>
       <ul class="nav-collapse nav">
         <li <?= uri_string() == '' ? 'class="active"' : '' ?>><a href="<?= site_url() ?>">Room Finding</a></li>
-        <li <?= uri_string() == 'dashboard' ? 'class="active"' : '' ?>><a
+        <li <?= preg_match('/^dashboard/', uri_string()) ? 'class="active"' : '' ?>><a
             href="<?= site_url('dashboard') ?>">Dashboard</a></li>
-        <li <?= uri_string() == 'config' ? 'class="active"' : '' ?>><a href="<?= site_url('config') ?>">Structure
+        <li <?= preg_match('/^structure/', uri_string()) ? 'class="active"' : '' ?>><a href="<?= site_url('structure') ?>">Structure
           Config</a></li>
       </ul>
     </div>

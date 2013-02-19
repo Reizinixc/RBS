@@ -45,6 +45,7 @@ $route['404_override'] = '';
 $route['login'] = 'auth/login';
 $route['logout'] = 'auth/logout';
 
+$route['structure'] = 'structure/rooms';
 $route['structure/rooms/(:num)'] = 'structure/rooms/index/$1';
 
 
