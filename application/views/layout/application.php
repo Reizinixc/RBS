@@ -4,7 +4,7 @@
   <meta charset="utf-8"/>
   <title><?= isset($title) ? $title : "" ?> &laquo; Room Booking Services</title>
 
-  <link rel="stylesheet" href="/asset/css/bootstrap.css" type="text/css"/>
+  <link rel="stylesheet" href="/asset/css/bootstrap.min.css" type="text/css"/>
   <link rel="stylesheet" href="/asset/css/style_base.css" type="text/css"/>
   <script type="text/javascript" src="/asset/js/layout/jquery-1.9.1.min.js"></script>
   <script type="text/javascript" src="/asset/js/layout/bootstrap.min.js"></script>
