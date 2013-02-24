@@ -28,8 +28,8 @@
       <a class="brand" href="<?= site_url() ?>">Room Booking Service</a>
       <ul class="nav-collapse nav">
         <li <?= uri_string() == '' ? 'class="active"' : '' ?>><a href="<?= site_url() ?>">Room Finding</a></li>
-        <li <?= preg_match('/^dashboard/', uri_string()) ? 'class="active"' : '' ?>><a
-            href="<?= site_url('dashboard') ?>">Dashboard</a></li>
+        <li <?= preg_match('/^bookings/', uri_string()) ? 'class="active"' : '' ?>><a
+            href="<?= site_url('bookings') ?>">Bookings</a></li>
         <li <?= preg_match('/^structure/', uri_string()) ? 'class="active"' : '' ?>><a href="<?= site_url('structure') ?>">Structure
           Config</a></li>
       </ul>
@@ -45,9 +45,9 @@
             <span class="text-info"><?= $this->session->userdata('name') ?></span>
           </a>
         </li>
-        <li><a href="/logout">Logout</a></li>
+        <li><a href="<?= site_url('logout') ?>">Logout</a></li>
         <?php } else { ?>
-        <li <?= uri_string() == 'login' ? 'class="active"' : '' ?>><a href="/login">Login</a></li>
+        <li <?= uri_string() == 'login' ? 'class="active"' : '' ?>><a href="<?= site_url('login') ?>">Login</a></li>
         <?php } ?>
       </ul>
     </div>
