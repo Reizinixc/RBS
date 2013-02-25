@@ -105,12 +105,8 @@ class Bookings extends MY_Booking_Controller {
 
   public function create() {
     $this->_includeForm();
-    $data['stylesheets'] = array('asset/css/datepicker.css', 'asset/css/timepicker.min.css');
-    $data['jsscripts'] = array(site_url('asset/js/layout/bootstrap-datepicker.js'), site_url('asset/js/layout/bootstrap-timepicker.min.js'));
+    $data = $this->_initDataArray();
     $data['title'] = "Create a Booking Request";
-    $data['bookingObjectives'] = $this->db->get('bookingObjectives')->result();
-    $data['jsonRooms'] = json_encode($this->db->select('id, name')->get('rooms')->result());
-    $data['jsonCourses'] = json_encode($this->db->get('courses')->result());
     $data['bookingRooms'] = array(0);
     // Initialize data
     $data['data'] = new Booking();
@@ -176,13 +172,11 @@ class Bookings extends MY_Booking_Controller {
 
   public function edit($id) {
     $this->_includeForm();
-    $data['stylesheets'] = array('asset/css/datepicker.css', 'asset/css/timepicker.min.css');
-    $data['jsscripts'] = array(site_url('asset/js/layout/bootstrap-datepicker.js'), site_url('asset/js/layout/bootstrap-timepicker.min.js'));
+
+    $data = $this->_initDataArray();
     $data['title'] = "Editing Booking Request";
-    $data['bookingObjectives'] = $this->db->get('bookingObjectives')->result();
-    $data['jsonRooms'] = json_encode($this->db->select('id, name')->get('rooms')->result());
-    $data['jsonCourses'] = json_encode($this->db->get('courses')->result());
-    $data['bookingRooms'] = $this->db->select('room_id')->distinct()->get_where('timeslots', "booking_id = $id")->result()[0]->room_id;
+    $bookingRoomsQuery = $this->db->select('room_id')->distinct()->get_where('timeslots', "booking_id = $id");
+    $data['bookingRooms'] = $bookingRoomsQuery->num_rows() ? $bookingRoomsQuery->result()[0]->room_id : array(0);
     $data['data'] = $this->booking->find($id);
     if ($data['data'] === false) {
       $this->session->set_flashdata(array('msg' => array(array(
@@ -323,6 +317,15 @@ class Bookings extends MY_Booking_Controller {
     } else {
       return true;
     }
+  }
+
+  private function _initDataArray() {
+    $data['stylesheets'] = array('asset/css/datepicker.css', 'asset/css/timepicker.min.css');
+    $data['jsscripts'] = array(site_url('asset/js/layout/bootstrap-datepicker.js'), site_url('asset/js/layout/bootstrap-timepicker.min.js'));
+    $data['bookingObjectives'] = $this->db->get('bookingObjectives')->result();
+    $data['jsonRooms'] = json_encode($this->db->select('id, name')->get('rooms')->result());
+    $data['jsonCourses'] = json_encode($this->db->get('courses')->result());
+    return $data;
   }
 
   private function _includeForm() {
