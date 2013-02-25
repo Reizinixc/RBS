@@ -144,14 +144,22 @@ class Booking extends MY_Model {
     } else {
       $this->db->trans_rollback();
     }
+    $this->db->update('bookings', $this, $this->getPKAttr());
+
+    return $result;
   }
 
   public function delete() {
-    if (parent::delete()) {
-      return $this->deleteTimeSlot();
+    if ($this->deleteTimeSlot()) {
+      return parent::delete();
     } else {
       return false;
     }
+  }
+
+  public function find($id) {
+    $query = $this->db->where("id = $id")->get($this->tablename);
+    return $query->num_rows() ? $query->result()[0] : false;
   }
 
   private function insertTimeSlot($rooms) {
@@ -182,5 +190,9 @@ class Booking extends MY_Model {
 
   private function deleteTimeSlot() {
     return $this->db->delete('timeslots', "booking_id = $this->id");
+  }
+
+  public function getPKAttr() {
+    return array('id' => $this->id);
   }
 }
