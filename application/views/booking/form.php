@@ -86,7 +86,7 @@
     <label class="control-label" for="course_code">Course Code</label>
 
     <div class="controls">
-      <input type="text" id="course_code" pattern="[0-9]{6,8}" maxlength="8" value="<?= form_error('course_code') ? form_error('course_code') : $data->course_code ?>" />
+      <input type="text" id="course_code" name="course_code" pattern="[0-9]{6,8}" maxlength="8" value="<?= form_error('course_code') ? form_error('course_code') : $data->course_code ?>" />
     </div>
   </div>
 
