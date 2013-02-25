@@ -97,13 +97,14 @@ class Booking extends MY_Model {
     return $this->db->where("user_id = $user_id AND ((endDate < '$currentDate') OR (endDate = '$currentDate' AND endTime < '$currentTime'))")->order_by('startDate, startTime', 'desc')->get('bookingcarddetails')->result();
   }
 
-  public function isBooked($room_id, $startDateTime, $endDateTime) {
+  public function isBooked($room_id, string $startDateTime, string $endDateTime) {
     $query = $this->db->get_where("timeslots", "room_id = $room_id AND startDateTime = '$startDateTime' AND endDateTime = '$endDateTime'");
     return $query->num_rows() ? $query->result()[0]->booking_id : false;
   }
 
   public function isConflict($room_id, $startDateTime, $endDateTime) {
-    return $this->isBooked($room_id, $startDateTime, $endDateTime) !== false;
+    $query = $this->db->get_where("timeslots", "room_id = $room_id AND startDateTime = '$startDateTime' AND endDateTime = '$endDateTime' AND booking_id != $this->id");
+    return $query->num_rows() ? $query->result()[0]->booking_id : false;
   }
 
   public function approve($booking_id, $status) {
@@ -114,5 +115,72 @@ class Booking extends MY_Model {
     }
 
     return $this->db->update('bookings', array('approveStatus_id' => $status), "id = $booking_id");
+  }
+
+  public function valid() {
+    $this->errors = array();
+
+    return empty($this->errors);
+  }
+
+  public function _insert($rooms) {
+    if ($this->db->insert($this->tablename, $this)) {
+      $this->id = $this->db->order_by('id', 'desc')->select('id')->get('bookings', 1)->result()[0]->id;
+      var_dump($this);
+      return $this->insertTimeSlot($rooms);
+    } else {
+      return false;
+    }
+  }
+
+  public function _update($rooms) {
+    $result = true;
+
+    $this->db->trans_begin();
+    $result = ($result and $this->deleteTimeSlot());
+    $result = ($result and $this->insertTimeSlot($rooms));
+    if ($result == true) {
+      $this->db->trans_commit();
+    } else {
+      $this->db->trans_rollback();
+    }
+  }
+
+  public function delete() {
+    if (parent::delete()) {
+      return $this->deleteTimeSlot();
+    } else {
+      return false;
+    }
+  }
+
+  private function insertTimeSlot($rooms) {
+    $batchSlots = array();
+
+    $endDate = new DateTime($this->endDate);
+    $startTime = explode(':', $this->startTime);
+    $startTime = new DateInterval("PT$startTime[0]H$startTime[1]M");
+    $endTime = explode(':', $this->endTime);
+    $endTime = new DateInterval("PT$endTime[0]H$endTime[1]M");
+
+    for ($currentDate = new DateTime($this->startDate); $currentDate <= $endDate; $currentDate->add(new DateInterval('P1D'))) {
+      $dayAttr = "isEvery".$currentDate->format('D');
+      if (!$this->$dayAttr)
+        continue;
+      $startDateTime = clone $currentDate;
+      $startDateTime->add($startTime);
+      $endDateTime = clone $currentDate;
+      $endDateTime->add($endTime);
+
+      foreach ($rooms as $room) {
+        $batchSlots[] = array('booking_id' => $this->id, 'room_id' => $room, 'startDateTime' => $startDateTime->format('Y-m-d H:i'), 'endDateTime' => $endDateTime->format('Y-m-d H:i'));
+      }
+    }
+
+    return $this->db->insert_batch('timeslots', $batchSlots);
+  }
+
+  private function deleteTimeSlot() {
+    return $this->db->delete('timeslots', "booking_id = $this->id");
   }
 }
