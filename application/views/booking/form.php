@@ -39,7 +39,7 @@
       <?php foreach (array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat') as $day) { ?>
       <?php $dayAttr = "isEvery".$day ?>
       <label class="checkbox inline">
-        <input type="checkbox" name="<?= $dayAttr ?>" value="1" <?= set_checkbox($dayAttr, 1, $data->$dayAttr) ?> /> <?= $day ?>
+        <input type="checkbox" name="<?= $dayAttr ?>" value="1" <?= $data->$dayAttr == 1 ? 'checked="checked"' : '' ?> /> <?= $day ?>
       </label>
       <?php } ?>
       <br />
