@@ -23,7 +23,7 @@
       <?php } ?>
     </td>
     <td>
-      <?php foreach ($booking->roomList ? json_decode($booking->roomList) : array() as $room) { ?>
+      <?php foreach ($booking->roomList ? array_unique(json_decode($booking->roomList)) : array() as $room) { ?>
       <?= $room.' ' ?>
       <?php } ?>
     </td>
