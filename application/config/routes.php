@@ -47,6 +47,7 @@ $route['logout'] = 'auth/logout';
 
 $route['structure'] = 'structure/rooms';
 $route['structure/rooms/(:num)'] = 'structure/rooms/index/$1';
+$route['bookings/(:num)'] = 'bookings/index/$1';
 
 
 /* End of file routes.php */
