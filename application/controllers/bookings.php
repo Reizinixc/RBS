@@ -10,8 +10,8 @@ class Bookings extends MY_Booking_Controller {
     $this->load->model('booking');
   }
 
-  public function index($room_id = null) {
-    if (!$room_id) {
+  public function index($id = null) {
+    if (!$id) {
       // Show all current booking
       $data['emptyMsg'] = "No booking. Would you like to create one?";
       $data['canEdit'] = true;
@@ -20,11 +20,27 @@ class Bookings extends MY_Booking_Controller {
 
 
       $this->addView('booking/index');
+      $this->loadView($data);
     } else {
       // Show booking details
-      throw new Exception("Unimplemented");
+      $data['timeslots'] = $this->db->join('rooms', 'rooms.id = timeslots.room_id')->get_where('timeslots', "booking_id = $id")->result();
+      $roomQuery = $this->db->get_where('bookingcarddetails', "id = $id");
+      if ($roomQuery->num_rows()) {
+        $data['data'] = $roomQuery->result()[0];
+        $data['title'] = $data['data']->course_code ? $data['data']->course_code." (".$data['data']->additionObjective.")" : $data['data']->additionObjective;
+        $this->addView('booking/view');
+        $this->loadView($data);
+      } else {
+        $this->session->set_flashdata(array('msg' => array(
+          array(
+            'type' => 'error',
+            'head' => '',
+            'msg' => 'Cannot find booking request.'
+          )
+        )));
+        redirect('bookings');
+      }
     }
-    $this->loadView($data);
   }
 
   /**
@@ -261,6 +277,38 @@ class Bookings extends MY_Booking_Controller {
       ))));
     }
     redirect('bookings');
+  }
+
+  public function deallocate($room_id, $startDateTime, $endDateTime) {
+    $startDateTime = date('Y-m-d H:i', $startDateTime);
+    $endDateTime = date('Y-m-d H:i', $endDateTime);
+    $timeslotQuery = $this->db->where("room_id = $room_id AND startDateTime = '$startDateTime' AND endDateTime = '$endDateTime'")->get('timeslots');
+    if ($timeslotQuery->num_rows()) {
+      $booking_id = $timeslotQuery->result()[0]->booking_id;
+      $bookingOwnerID = $this->db->get_where('bookings', "id = $booking_id")->result()[0]->user_id;
+      if ($bookingOwnerID == $this->session->userdata('user_id') or $this->session->userdata('userrole_id') == 1) {
+        if ($this->db->delete('timeslots', "room_id = $room_id AND startDateTime = '$startDateTime' AND endDateTime = '$endDateTime'")) {
+          $this->session->set_flashdata(array('msg' => array(array(
+            'type' => 'success',
+            'head' => '',
+            'msg' => 'Successfully deallocate booking request.'
+          ))));
+        } else {
+          $this->session->set_flashdata(array('msg' => array(array(
+            'type' => 'error',
+            'head' => '',
+            'msg' => 'Cannot deallocate booking request.'
+          ))));
+        }
+      } else {
+        $this->session->set_flashdata(array('msg' => array(array(
+          'type' => 'error',
+          'head' => '',
+          'msg' => 'Cannot deallocate other booking request.'
+        ))));
+      }
+      redirect("bookings/$booking_id");
+    }
   }
 
   public function _conflict() {
