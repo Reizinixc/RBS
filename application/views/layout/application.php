@@ -28,10 +28,14 @@
       <a class="brand" href="<?= site_url() ?>">Room Booking Service</a>
       <ul class="nav-collapse nav">
         <li <?= uri_string() == '' ? 'class="active"' : '' ?>><a href="<?= site_url() ?>">Room Finding</a></li>
+        <?php if ($this->session->userdata('userrole_id') != null) { ?>
         <li <?= preg_match('/^bookings/', uri_string()) ? 'class="active"' : '' ?>><a
             href="<?= site_url('bookings') ?>">Bookings</a></li>
+          <?php if ($this->session->userdata('userrole_id') == 1) { ?>
         <li <?= preg_match('/^structure/', uri_string()) ? 'class="active"' : '' ?>><a href="<?= site_url('structure') ?>">Structure
           Config</a></li>
+          <?php } ?>
+        <?php } ?>
       </ul>
     </div>
     <div id="accountPanel" class="pull-right">
