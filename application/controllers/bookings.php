@@ -129,11 +129,11 @@ class Bookings extends MY_Booking_Controller {
     $this->loadView($data);
   }
 
-  public function create() {
+  public function create($room_id = null) {
     $this->_includeForm();
     $data = $this->_initDataArray();
     $data['title'] = "Create a Booking Request";
-    $data['bookingRooms'] = array(0);
+    $data['bookingRooms'] = array($room_id ? $room_id : 0);
     // Initialize data
     $data['data'] = new Booking();
 
