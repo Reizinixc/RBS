@@ -1,4 +1,5 @@
-<?php if (!defined('BASEPATH')) exit('No direct script access allowed');
+<?php if (!defined('BASEPATH'))
+  exit('No direct script access allowed');
 
 class Booking extends MY_Model {
   /**
@@ -97,13 +98,13 @@ class Booking extends MY_Model {
     return $this->db->where("user_id = $user_id AND ((endDate < '$currentDate') OR (endDate = '$currentDate' AND endTime < '$currentTime'))")->order_by('startDate, startTime', 'desc')->get('bookingcarddetails')->result();
   }
 
-  public function isBooked($room_id, string $startDateTime, string $endDateTime) {
-    $query = $this->db->get_where("timeslots", "room_id = $room_id AND startDateTime = '$startDateTime' AND endDateTime = '$endDateTime'");
+  public function isBooked($room_id, $startDateTime, $endDateTime) {
+    $query = $this->db->get_where("timeslots", "room_id = $room_id AND startDateTime < '$endDateTime' AND endDateTime > '$startDateTime'");
     return $query->num_rows() ? $query->result()[0]->booking_id : false;
   }
 
   public function isConflict($room_id, $startDateTime, $endDateTime) {
-    $query = $this->db->get_where("timeslots", "room_id = $room_id AND startDateTime = '$startDateTime' AND endDateTime = '$endDateTime' AND booking_id != $this->id");
+    $query = $this->db->get_where("timeslots", "room_id = $room_id AND (startDateTime < '$endDateTime' AND endDateTime > '$startDateTime') AND booking_id != $this->id");
     return $query->num_rows() ? $query->result()[0]->booking_id : false;
   }
 
@@ -126,7 +127,7 @@ class Booking extends MY_Model {
   public function _insert($rooms) {
     if ($this->db->insert($this->tablename, $this)) {
       $this->id = $this->db->order_by('id', 'desc')->select('id')->get('bookings', 1)->result()[0]->id;
-      var_dump($this);
+//      var_dump($this);
       return $this->insertTimeSlot($rooms);
     } else {
       return false;
@@ -171,17 +172,33 @@ class Booking extends MY_Model {
     $endTime = explode(':', $this->endTime);
     $endTime = new DateInterval("PT$endTime[0]H$endTime[1]M");
 
-    for ($currentDate = new DateTime($this->startDate); $currentDate <= $endDate; $currentDate->add(new DateInterval('P1D'))) {
-      $dayAttr = "isEvery".$currentDate->format('D');
-      if (!$this->$dayAttr)
-        continue;
+    $isOneEvent = false;
+    foreach (array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat') as $day) {
+      $dayAttr = "isEvery".$day;
+      $isOneEvent = ($isOneEvent or $this->$dayAttr);
+    }
+
+    if (!$isOneEvent) {
+      $currentDate = new DateTime($this->startDate);
       $startDateTime = clone $currentDate;
       $startDateTime->add($startTime);
       $endDateTime = clone $currentDate;
       $endDateTime->add($endTime);
 
-      foreach ($rooms as $room) {
-        $batchSlots[] = array('booking_id' => $this->id, 'room_id' => $room, 'startDateTime' => $startDateTime->format('Y-m-d H:i'), 'endDateTime' => $endDateTime->format('Y-m-d H:i'));
+      $batchSlots[] = array('booking_id' => $this->id, 'room_id' => $rooms[0], 'startDateTime' => $startDateTime->format('Y-m-d H:i'), 'endDateTime' => $endDateTime->format('Y-m-d H:i'));
+    } else {
+      for ($currentDate = new DateTime($this->startDate); $currentDate <= $endDate; $currentDate->add(new DateInterval('P1D'))) {
+        $dayAttr = "isEvery".$currentDate->format('D');
+        if (!$this->$dayAttr)
+          continue;
+        $startDateTime = clone $currentDate;
+        $startDateTime->add($startTime);
+        $endDateTime = clone $currentDate;
+        $endDateTime->add($endTime);
+
+        foreach ($rooms as $room) {
+          $batchSlots[] = array('booking_id' => $this->id, 'room_id' => $room, 'startDateTime' => $startDateTime->format('Y-m-d H:i'), 'endDateTime' => $endDateTime->format('Y-m-d H:i'));
+        }
       }
     }
 

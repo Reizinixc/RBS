@@ -6,7 +6,7 @@
       <h3><?= $data->course_code ? "$data->course_code ($data->additionObjective)" : $data->additionObjective ?></h3>
     </div>
     <div class="pull-right">
-      <?php if ($data->approveStatus != 1) { ?>
+      <?php if (($data->approveStatus != 1 and $data->user_id == $this->session->userdata('user_id')) or $this->session->userdata('userrole_id') == 1) { ?>
       <a class="btn" href="<?= site_url('bookings/edit/'.$data->id) ?>"><i class="icon-pencil"></i> Edit Booking</a>
       <?php } ?>
       <?php if ($data->user_id == $this->session->userdata('user_id')) { ?>

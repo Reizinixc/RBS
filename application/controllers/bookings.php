@@ -31,13 +31,7 @@ class Bookings extends MY_Booking_Controller {
         $this->addView('booking/view');
         $this->loadView($data);
       } else {
-        $this->session->set_flashdata(array('msg' => array(
-          array(
-            'type' => 'error',
-            'head' => '',
-            'msg' => 'Cannot find booking request.'
-          )
-        )));
+        $this->session->set_flashdata(array('msg' => array(array('type' => 'error', 'head' => '', 'msg' => 'Cannot find booking request.'))));
         redirect('bookings');
       }
     }
@@ -50,11 +44,7 @@ class Bookings extends MY_Booking_Controller {
    */
   public function pending() {
     if ($this->session->userdata('userrole_id') != 1) {
-      $this->session->set_flashdata(array('msg' => array(array(
-        'type' => 'error',
-        'head' => '',
-        'msg' => 'Cannot access to the configuration by permission.'
-      ))));
+      $this->session->set_flashdata(array('msg' => array(array('type' => 'error', 'head' => '', 'msg' => 'Cannot access to the configuration by permission.'))));
 
       redirect(site_url());
     }
@@ -66,47 +56,17 @@ class Bookings extends MY_Booking_Controller {
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       if (isset($_POST['accept'])) {
         if ($this->booking->approve($this->input->get_post('accept'), 1)) {
-          $this->session->set_flashdata(array('msg' => array(
-            array(
-              'type' => 'success',
-              'head' => '',
-              'msg' => 'Successfully accepted pending request'
-            )
-          )));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Successfully accepted pending request'))));
         } else {
-          $this->session->set_flashdata(array('msg' => array(
-            array(
-              'type' => 'success',
-              'head' => '',
-              'msg' => 'Cannot accept pending request'
-            )
-          )));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Cannot accept pending request'))));
         }
       } else if (isset($_POST['reject'])) {
         if ($this->booking->approve($this->input->get_post('reject'), 2)) {
-          $this->session->set_flashdata(array('msg' => array(
-            array(
-              'type' => 'success',
-              'head' => '',
-              'msg' => 'Successfully rejected pending request'
-            )
-          )));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Successfully rejected pending request'))));
         } else
-          $this->session->set_flashdata(array('msg' => array(
-            array(
-              'type' => 'success',
-              'head' => '',
-              'msg' => 'Cannot reject pending request'
-            )
-          )));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Cannot reject pending request'))));
       } else {
-        $this->session->set_flashdata(array('msg' => array(
-          array(
-            'type' => 'success',
-            'head' => '',
-            'msg' => 'Cannot reject pending request'
-          )
-        )));
+        $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Cannot reject pending request'))));
       }
       redirect('bookings/pending');
     }
@@ -175,17 +135,9 @@ class Bookings extends MY_Booking_Controller {
         $this->booking->additionObjective = $this->input->get_post('additionObjective');
 
         if ($this->booking->_insert(array($this->input->get_post('rooms')))) {
-          $this->session->set_flashdata(array('msg' => array(array(
-            'type' => 'success',
-            'head' => '',
-            'msg' => 'Successfully create booking request'
-          ))));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Successfully create booking request'))));
         } else {
-          $this->session->set_flashdata(array('msg' => array(array(
-            'type' => 'error',
-            'head' => '',
-            'msg' => 'Failed to create booking request'
-          ))));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'error', 'head' => '', 'msg' => 'Failed to create booking request'))));
         }
         redirect('bookings');
       }
@@ -205,11 +157,7 @@ class Bookings extends MY_Booking_Controller {
     $data['bookingRooms'] = $bookingRoomsQuery->num_rows() ? $bookingRoomsQuery->result()[0]->room_id : array(0);
     $data['data'] = $this->booking->find($id);
     if ($data['data'] === false) {
-      $this->session->set_flashdata(array('msg' => array(array(
-        'type' => 'error',
-        'head' => '',
-        'msg' => 'Cannot find booking request. Maybe deleted or invalid booking request ID'
-      ))));
+      $this->session->set_flashdata(array('msg' => array(array('type' => 'error', 'head' => '', 'msg' => 'Cannot find booking request. Maybe deleted or invalid booking request ID'))));
       redirect('bookings');
     }
 
@@ -251,17 +199,9 @@ class Bookings extends MY_Booking_Controller {
         $this->booking->additionObjective = $this->input->get_post('additionObjective');
 
         if ($this->booking->_update(array($this->input->get_post('rooms')))) {
-          $this->session->set_flashdata(array('msg' => array(array(
-            'type' => 'success',
-            'head' => '',
-            'msg' => 'Successfully edited booking request'
-          ))));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Successfully edited booking request'))));
         } else {
-          $this->session->set_flashdata(array('msg' => array(array(
-            'type' => 'error',
-            'head' => '',
-            'msg' => 'Failed to edit booking request'
-          ))));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'error', 'head' => '', 'msg' => 'Failed to edit booking request'))));
         }
         redirect('bookings');
       }
@@ -274,17 +214,9 @@ class Bookings extends MY_Booking_Controller {
   public function delete($id) {
     $this->booking->id = $id;
     if ($this->booking->delete()) {
-      $this->session->set_flashdata(array('msg' => array(array(
-        'type' => 'success',
-        'head' => '',
-        'msg' => 'Successfully deleted booking request.'
-      ))));
+      $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Successfully deleted booking request.'))));
     } else {
-      $this->session->set_flashdata(array('msg' => array(array(
-        'type' => 'error',
-        'head' => '',
-        'msg' => 'Failed to deleted booking request.'
-      ))));
+      $this->session->set_flashdata(array('msg' => array(array('type' => 'error', 'head' => '', 'msg' => 'Failed to deleted booking request.'))));
     }
     redirect('bookings');
   }
@@ -298,24 +230,12 @@ class Bookings extends MY_Booking_Controller {
       $bookingOwnerID = $this->db->get_where('bookings', "id = $booking_id")->result()[0]->user_id;
       if ($bookingOwnerID == $this->session->userdata('user_id') or $this->session->userdata('userrole_id') == 1) {
         if ($this->db->delete('timeslots', "room_id = $room_id AND startDateTime = '$startDateTime' AND endDateTime = '$endDateTime'")) {
-          $this->session->set_flashdata(array('msg' => array(array(
-            'type' => 'success',
-            'head' => '',
-            'msg' => 'Successfully deallocate booking request.'
-          ))));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'success', 'head' => '', 'msg' => 'Successfully deallocate booking request.'))));
         } else {
-          $this->session->set_flashdata(array('msg' => array(array(
-            'type' => 'error',
-            'head' => '',
-            'msg' => 'Cannot deallocate booking request.'
-          ))));
+          $this->session->set_flashdata(array('msg' => array(array('type' => 'error', 'head' => '', 'msg' => 'Cannot deallocate booking request.'))));
         }
       } else {
-        $this->session->set_flashdata(array('msg' => array(array(
-          'type' => 'error',
-          'head' => '',
-          'msg' => 'Cannot deallocate other booking request.'
-        ))));
+        $this->session->set_flashdata(array('msg' => array(array('type' => 'error', 'head' => '', 'msg' => 'Cannot deallocate other booking request.'))));
       }
       redirect("bookings/$booking_id");
     }
@@ -332,22 +252,44 @@ class Bookings extends MY_Booking_Controller {
     $endTime = explode(':', $this->input->get_post('endTime'));
     $endTime = new DateInterval("PT$endTime[0]H$endTime[1]M");
 
-    $eventOccurred = 0;
-    for ($currentDate = clone $startDate; $currentDate <= $endDate; $currentDate->add(new DateInterval('P1D'))) {
-      if (!$this->input->get_post("isEvery".$currentDate->format('D')))
-        continue;
+    $isManyEvent = false;
+    foreach (array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat') as $day) {
+      $dayAttr = "isEvery".$day;
+      $isManyEvent = ($isManyEvent or $this->input->get_post($dayAttr));
+    }
 
+    $eventOccurred = 0;
+
+    if (!$isManyEvent) {
       ++$eventOccurred;
+      $currentDate = clone $startDate;
       $currentStartTime = clone $currentDate;
       $currentStartTime->add($startTime);
       $currentEndTime = clone $currentDate;
       $currentEndTime->add($endTime);
-
       $bookingResult = $this->booking->isConflict($room_id, $currentStartTime->format('Y-m-d H:i'), $currentEndTime->format('Y-m-d H:i'));
       if ($bookingResult !== false) {
         $bookings = $this->db->get_where('bookings', "id = $bookingResult")->result()[0];
         $this->form_validation->set_message('_conflict', "This booking is conflict with $bookings->additionObjective at ".$currentStartTime->format('d M y H:i')." <a href='".site_url("bookings/$bookings->id")."'>See Conflict Booking Request</a>");
         return false;
+      }
+    } else {
+      for ($currentDate = clone $startDate; $currentDate <= $endDate; $currentDate->add(new DateInterval('P1D'))) {
+        if (!$this->input->get_post("isEvery".$currentDate->format('D')))
+          continue;
+
+        ++$eventOccurred;
+        $currentStartTime = clone $currentDate;
+        $currentStartTime->add($startTime);
+        $currentEndTime = clone $currentDate;
+        $currentEndTime->add($endTime);
+
+        $bookingResult = $this->booking->isConflict($room_id, $currentStartTime->format('Y-m-d H:i'), $currentEndTime->format('Y-m-d H:i'));
+        if ($bookingResult !== false) {
+          $bookings = $this->db->get_where('bookings', "id = $bookingResult")->result()[0];
+          $this->form_validation->set_message('_conflict', "This booking is conflict with $bookings->additionObjective at ".$currentStartTime->format('d M y H:i')." <a href='".site_url("bookings/$bookings->id")."'>See Conflict Booking Request</a>");
+          return false;
+        }
       }
     }
 
