@@ -89,6 +89,24 @@ class Rooms extends MY_Structure_Controller {
     }
   }
 
+  public function delete($id) {
+    $this->room->id = $id;
+    if ($this->room->delete()) {
+      $this->session->set_flashdata(array('msg' => array(array(
+        'type' => 'success',
+        'head' => '',
+        'msg' => 'Successfully deleted room.'
+      ))));
+    } else {
+      $this->session->set_flashdata(array('msg' => array(array(
+        'type' => 'error',
+        'head' => '',
+        'msg' => 'Cannot delete the room. May be someone requested for booking or deleted by other.'
+      ))));
+    }
+    redirect('structure/rooms');
+  }
+
   private function _formInclude() {
     $this->load->helper('form');
     $this->load->library('form_validation');
