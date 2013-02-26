@@ -3,10 +3,6 @@ $menus = <<<EOF
 [
   [
     {
-      "n": "pending",
-      "d": "Pending List"
-    },
-    {
       "n": "history",
       "d": "Booking History"
     }
@@ -25,6 +21,11 @@ $uri = uri_string();
     <li <?= 'bookings' == uri_string() ? 'class="active"' : '' ?>>
       <a href="<?= site_url('bookings') ?>">My Booking List <?= 'bookings' == uri_string() ? '<i class="icon-chevron-right pull-right"></i>' : '' ?></a>
     </li>
+    <?php if ($this->session->userdata('userrole_id') == 1) { ?>
+    <li <?= 'bookings/pending' == uri_string() ? 'class="active"' : '' ?>>
+      <a href="<?= site_url('bookings/pending') ?>">Pending List <?= 'bookings/pending' == uri_string() ? '<i class="icon-chevron-right pull-right"></i>' : '' ?></a>
+    </li>
+    <?php } ?>
     <?php foreach ($menu as $m) {
     $matched = preg_match('/^(bookings\/'.$m->n.')/', uri_string()) ? 'active' : ''
     ?>

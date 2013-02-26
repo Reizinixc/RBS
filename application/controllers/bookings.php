@@ -49,6 +49,16 @@ class Bookings extends MY_Booking_Controller {
    * Permission: Staff
    */
   public function pending() {
+    if ($this->session->userdata('userrole_id') != 1) {
+      $this->session->set_flashdata(array('msg' => array(array(
+        'type' => 'error',
+        'head' => '',
+        'msg' => 'Cannot access to the configuration by permission.'
+      ))));
+
+      redirect(site_url());
+    }
+
     $data['bookings'] = $this->booking->findPending();
     $bookingsCount = count($data['bookings']);
     $data['title'] = ($bookingsCount ? "($bookingsCount) " : "")."Pending List";
