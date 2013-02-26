@@ -1,5 +1,5 @@
 <div id="loginForm" class="span5 offset3">
-  <form name="loginForm" method="POST" action="/login" class="form-horizontal" accept-charset="utf-8">
+  <form name="loginForm" method="POST" class="form-horizontal" accept-charset="utf-8">
     <fieldset>
       <legend class="text-center">Please Login to continue</legend>
       <div class="control-group">
